@@ -9,18 +9,18 @@ import syslog
 from pathlib import Path
 
 # 1. In /etc/aliases:
-# sic: "| sudo -u user /path/to/sic/tools/mailing_list_rcv.py"
+# tade: "| sudo -u user /path/to/tade/tools/mailing_list_rcv.py"
 # 2. Run newaliases
-# 3: chmod u+x /path/to/sic/tools/mailing_list_rcv.py
+# 3: chmod u+x /path/to/tade/tools/mailing_list_rcv.py
 # 4. Run visudo and insert:
-# nobody ALL=(user:user) NOPASSWD: /path/to/sic/tools/mailing_list_rcv.py
+# nobody ALL=(user:user) NOPASSWD: /path/to/tade/tools/mailing_list_rcv.py
 
 # Local testing using msmtp:
 # msmtp --host=localhost --read-envelope-from -t < mail.eml
 # or
 # sendmail -t < mail.eml
 
-DOTTED_PATH = "sic.mail.post_receive_job"
+DOTTED_PATH = "tade.mail.post_receive_job"
 
 
 def normalize_email(addr):
@@ -50,10 +50,10 @@ if __name__ == "__main__":
             syslog.syslog(data)
             sys.exit(0)
         from_ = msg["from"].addresses[0].addr_spec
-        with sqlite3.connect(base_dir / "sic.db") as conn:
+        with sqlite3.connect(base_dir / "tade.db") as conn:
             cur = conn.cursor()
             cur.execute(
-                "SELECT 1 FROM sic_user WHERE email = ?", (normalize_email(from_),)
+                "SELECT 1 FROM tade_user WHERE email = ?", (normalize_email(from_),)
             )
             if not cur.fetchone():
                 syslog.syslog(f"User with email {from_} not found, discarding.")
@@ -61,15 +61,15 @@ if __name__ == "__main__":
                 sys.exit(0)
             now = datetime.datetime.now()
             cur.execute(
-                "INSERT OR IGNORE INTO sic_jobkind(dotted_path, created, last_modified) VALUES (?, ?, ?)",
+                "INSERT OR IGNORE INTO tade_jobkind(dotted_path, created, last_modified) VALUES (?, ?, ?)",
                 (DOTTED_PATH, now, now),
             )
             cur.execute(
-                "SELECT id FROM sic_jobkind WHERE dotted_path = ?", (DOTTED_PATH,)
+                "SELECT id FROM tade_jobkind WHERE dotted_path = ?", (DOTTED_PATH,)
             )
             kind_id = cur.fetchone()[0]
             cur.execute(
-                "INSERT OR ABORT INTO sic_job(created, active, periodic, failed, data, kind_id) VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT OR ABORT INTO tade_job(created, active, periodic, failed, data, kind_id) VALUES (?, ?, ?, ?, ?, ?)",
                 (now, True, False, False, json.dumps(data), kind_id),
             )
         syslog.syslog("Queued mail successfuly.")

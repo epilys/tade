@@ -1,4 +1,4 @@
-sic/local
+tade/local
 *.log
 *.pot
 *.pyc
@@ -16,7 +16,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-sic.db
+tade.db
 fts.db
 .vscode
-sic.egg-info/
+tade.egg-info/
+dist/

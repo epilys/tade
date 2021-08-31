@@ -13,21 +13,21 @@ Commit subjects *should* be written in imperative mood for consistency and clari
 Uses [`.pylintrc`](.pylintrc).
 
 ```shell
-pylint -E  sic/*py sic/views/*py
+pylint -E  tade/*py tade/views/*py
 ```
 
 #### python, `black`
 
 ```shell
-black sic/*py
+black tade/*py
 ```
 
 ### django templates, `djhtml`
 
 ```shell
-git add sic/templates/TEMPL.html # stage first
-djhtml -i sic/templates/TEMPL.html # in-place formatting
-git add -p sic/templates/TEMPL.html # selectively add formatting if acceptable
+git add tade/templates/TEMPL.html # stage first
+djhtml -i tade/templates/TEMPL.html # in-place formatting
+git add -p tade/templates/TEMPL.html # selectively add formatting if acceptable
 ```
 
 #### HTML, `vnu.jar`
