@@ -1,0 +1,228 @@
+@charset "UTF-8";
+
+
+:root {
+  --main-width: 83.3vw;
+  --color-text-primary: #111;
+}
+
+html {
+    font-size: 15px;
+}
+
+body {
+    background-color: #e6e6e6;
+    color: var(--color-text-primary);
+   margin: 0 auto;
+  min-width: 250px;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(10px, 1fr));
+  grid-auto-rows: min-content min-content min-content;
+  row-gap: min(6vw, 0.8rem);
+  display: grid;
+  grid-template-columns: repeat(24, minmax(10px, 1fr));
+  grid-auto-rows: auto 1fr auto;
+  row-gap: 2rem;
+  align-content: space-between;
+background: url("/tile.png") white;
+background-repeat: repeat;
+background-size: 4rem;
+min-height: 100vh;
+font-family: 'IBM Plex Serif', Archivo, 'Times New Roman', serif;
+
+}
+
+h1 {
+    font-weight: 400;
+    margin-top: 4rem;
+    margin-bottom: 1.5rem;
+    font-size: 3rem;
+    line-height: 1;
+}
+
+h2 {
+    font-style: italic;
+    font-weight: 400;
+    margin-top: 2.1rem;
+    margin-bottom: 1.4rem;
+    font-size: 2.2rem;
+    line-height: 1;
+}
+
+h3 {
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.7rem;
+    margin-top: 2rem;
+    margin-bottom: 1.4rem;
+    line-height: 1;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    width: 55%;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+body>* {
+  grid-row: span 1;
+  grid-column: 3 / span 20;
+  max-width: 100%;
+}
+
+body>main {
+  width: 100%;
+max-width: clamp(10vw, 76ch, min(100%, var(--main-width)));
+justify-self: center;
+}
+
+body>main p:not([align=center]), body>main li {
+text-align: justify;
+hyphens: auto;
+}
+
+body>footer {
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  gap: 1px;
+}
+
+
+
+@media (max-width: 1200px) {
+body>header {
+  margin-bottom: 0rem;
+}
+  :root {
+    --main-width: 92vw;
+  }
+  body>main, body>header, body>footer {
+    grid-column: 2 / span 22;
+  }
+}
+
+@media (max-width: 600px) {
+  :root {
+    --main-width: 92vw;
+  }
+    body>main {
+    grid-column: 1 / span 24;
+    padding: 0rem 1rem;
+  }
+}
+dt:not(:first-child),
+li:not(:first-child) {
+    margin-top: 0.25rem;
+}
+
+figure {
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+    -webkit-margin-start: 0;
+    -webkit-margin-end: 0;
+    margin: 0 0 3em 0;
+}
+
+figcaption {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    vertical-align: baseline;
+    width: 100%;
+    text-align: center;
+}
+
+figure.fullwidth figcaption {
+    margin-right: 24%;
+}
+
+a:link,
+a:visited {
+    color: inherit;
+}
+
+/* Sidenotes, margin notes, figures, captions */
+img {
+    max-width: 100%;
+}
+
+code, pre > code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 1.0rem;
+    line-height: 1.42;
+    -webkit-text-size-adjust: 100%; /* Prevent adjustments of font size after orientation changes in iOS. See https://github.com/edwardtufte/tufte-css/issues/81#issuecomment-261953409 */
+}
+
+.sans > code {
+    font-size: 1.2rem;
+}
+
+h1.title {
+  display: none;
+}
+
+h1 > code,
+h2 > code,
+h3 > code {
+    font-size: 0.80em;
+}
+
+
+a.feed {
+  font: bold .8rem sans-serif;
+  color: #fff;
+  background: #f60;
+  padding: 0.2em 0.35em;
+  text-shadow: -1px -1px 0 #a2280c, 1px -1px 0 #a2280c, -1px 1px 0 #a2280c, 1px 1px 0 #a2280c;
+  text-decoration: none;
+  vertical-align: middle;
+}
+
+
+a.anchor {
+    position: absolute;
+    transform: translateX(-120%);
+}
+
+
+kbd {
+  --color-border-tertiary: #a9b3be33;
+  --color-bg-secondary: #f6faff;
+    display: inline-block;
+    padding: 3px 5px;
+    font: 11px ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+        line-height: normal;
+    line-height: 10px;
+    color: var(--color-text-primary);
+    vertical-align: middle;
+    background-color: var(--color-bg-secondary);
+    border: solid 1px var(--color-border-tertiary);
+    border-bottom-color: var(--color-border-tertiary);
+    border-radius: 6px;
+    box-shadow: inset 0 -1px 0 var(--color-border-tertiary);
+}
+
+kbd code {
+    font-size: 11px;
+    line-height: 10px;
+  }
+
+  img.screenshot {
+    outline: 1px solid #e3dddd;
+    border-radius: 3px;
+    object-fit: scale-down;
+    height: auto;
+}
+
+ul {
+    padding-left: 0;
+}
