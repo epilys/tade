@@ -15,11 +15,15 @@
 	</tbody>
 </table>
 
-<strong><code>[tade]</code></strong> <sup>†</sup> is a discussion/forum/link aggregator application. It provides three interfaces: a regular web page, a mailing list bridge and an NNTP server.
+<strong><code>[tade]</code></strong> <sup>†</sup> is a discussion/forum/link aggregator application. It provides three interfaces:
+
+1. a regular web page,
+2. a mailing list bridge and
+3. an NNTP server.
 
 <sup>†. pronounced *tA-de*, *ta*- as in *tally* and -*de* as in *the*. *τάδε* is a Greek pronoun meaning *this*</sup>
 
-Repository: https://github.com/epilys/tade/
+Repository: https://github.com/epilys/tade/. See `DEPLOY.md` and `CONFIG.md` for running your instance.
 
 Public instance at https://tade.link (formerly sic.pm) | [Tor hidden service](http://sicpm3hp7dtrwhmf4qlelycqlvie6flqa5qnjnt3snok5xydvxhs4xyd.onion/) | IRC: [`#sic` on Libera Chat](https://libera.chat/) | [[sic] bot on Mastodon](https://botsin.space/@sic)
 

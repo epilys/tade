@@ -1,6 +1,8 @@
-# How to deploy [tade]
+# How to deploy `[tade]`
 
-## Basic setup
+## HTTP(s) setup
+
+### Basic setup
 
 ```shell
 make # this will create a dist/ directory with a tarball: dist/tade-0.1.tar.gz
@@ -77,7 +79,9 @@ python3 manage.py migrate #sets up database
 python3 manage.py createsuperuser #selfexplanatory
 ```
 
-## Development
+In the `admin/` section, edit the `Site` to include the site's name and URL.
+
+### Development
 
 You can use django's development server:
 
@@ -89,11 +93,11 @@ python3 manage.py runserver 0.0.0.0:8000 # run at public-ip:8000
 
 Any IPs you use with `runserver` must be in your `ALLOWED_HOSTS` settings.
 
-## Production
+### Production
 
 Put local settings in `/local/` in `settings_local.py`. Optionally install `memcached` and `pymemcache`.
 
-### `mysite/settings.py`
+#### `mysite/settings.py`
 
 ```python
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -109,13 +113,13 @@ ADMINS = [('user', 'webmaster@example.com'), ]
 STATIC_ROOT = "/path/to/collected/static/"
 ```
 
-### Static files
+#### Static files
 
 (Optional: see `tools/tag-input-wasm/README.md`)
 
 Issue `python3 manage.py collectstatic` to put all static files in your defined `STATIC_ROOT` folder.
 
-### `apache2` and `modwsgi`
+#### `apache2` and `modwsgi`
 
 ```text
 <VirtualHost *:80>
@@ -188,7 +192,7 @@ Issue `python3 manage.py collectstatic` to put all static files in your defined 
 </VirtualHost>
 ```
 
-### `memcached`
+#### `memcached`
 
 Add the following to `settings_local.py`:
 
@@ -221,3 +225,96 @@ And add:
 PartOf=apache2.service
 WantedBy=apache2.service
 ```
+
+## NNTP setup
+
+This a systemd unit service that runs the django management command `runnntp` on port 9999. The server should be restarted each time the installation's code is updated.
+
+```systemd.unit
+[Unit]
+Description=NNTP Daemon
+PartOf=apache2.service
+
+[Service]
+ExecStart=/home/debian/sic/venv/bin/python3.7 /home/debian/sic/manage.py runnntp --use_ssl --certfile /etc/letsencrypt/live/sic.pm/fullchain.pem --keyfile /etc/letsencrypt/live/sic.pm/privkey.pem
+Type=simple
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+DevicePolicy=closed
+ProtectSystem=strict
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+MemoryDenyWriteExecute=yes
+LockPersonality=yes
+
+[Install]
+WantedBy=multi-user.target,apache2.service
+```
+
+And a unit file for a `simpleproxy` redirecting 563 ports to localhost 9999:
+
+```systemd-unit
+
+[Unit]
+Description=sic nntp tcp proxy
+PartOf=sic-nntp.service
+
+[Service]
+Type=simple
+ExecStart=simpleproxy - -vL 563 -R 127.0.0.1:9999
+
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+DevicePolicy=closed
+ProtectSystem=strict
+ProtectHome=read-only
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=yes
+RestrictRealtime=yes
+MemoryDenyWriteExecute=yes
+LockPersonality=yes
+
+
+[Install]
+WantedBy=default.target,sic-nntp.service
+```
+
+And don't forget to enable port 563 (nntps) on your firewall.
+
+## Mailing list setup
+
+If you have a mailing list server setup, add an alias that forwards the email to a python3 script like so:
+
+```shell
+vim /etc/aliases
+```
+
+add the line
+
+```
+tade: "| sudo -u debian /home/debian/tade/tools/mailing_list_rcv.py"
+```
+
+Assuming `tade` is deployed at this path and is owned by user debian. The path is important because the database is assumed to be in the directory including the `tools` directory. Issue `newaliases` to load the changes.
+
+To enable a non-root user run the `mailing_list_rcv.py` script from `/etc/aliases` use sudo and add a line in the sudo config for this command by running `visudo` (this opens the sudo config)
+and adding a line like:
+
+```
+nobody ALL=(debian:debian) NOPASSWD: /home/debian/sic/tools/mailing_list_rcv.py
+```
+
+`nobody` because that's the user postfix uses for incoming email. So the user nobody can run the command we setup in the `/etc/aliases`.
+
+
+Received mail is inserted as new jobs in the system you can inspect in the Job section of the admin panel.
