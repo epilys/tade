@@ -30,6 +30,7 @@ Below `INSTALLED_APPS`, add the following:
 SITE_ID = 1
 
 AUTH_USER_MODEL = "tade.User"
+AUTHENTICATION_BACKENDS = ["tade.auth.TadeBackend"]
 ```
 
 And in `TEMPLATES['OPTIONS']['context_processors']` add the following line:
